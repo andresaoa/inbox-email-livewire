@@ -13,26 +13,6 @@
         integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <style>
-        address {
-            float: left;
-            font-size: 75%;
-            font-style: normal;
-            line-height: 1.25;
-            margin: 0 1em 1em 0;
-        }
-
-        address {
-            margin: 0 0 1em;
-        }
-
-        address {
-            float: left;
-            font-size: 100%;
-            font-weight: bold;
-        }
-
-    </style>
     @livewireStyles
 </head>
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PlantillasController;
 use App\Http\Livewire\CorreoLivewire;
@@ -20,6 +21,10 @@ use Illuminate\Support\Facades\Http;
 Route::get('/', [LoginController::class,'login'])->name('login.index');
 Route::post('/auth', [LoginController::class,'auth'])->name('login.auth');
 // correos
-Route::get('/aoacall',[PlantillasController::class,'index'])->name('aoacall');
+Route::get('/aoacall',[Controller::class,'index'])->name('aoacall');
 // plantillas
 Route::get('plantillas',[PlantillasController::class,'index'])->name('plantillas.index');
+Route::get('plantillas/create',[PlantillasController::class,'create'])->name('plantillas.create');
+Route::post('plantilla/store',[PlantillasController::class,'store'])->name('plantillas.store');
+Route::get('plantillas/{plantilla}/edit',[PlantillasController::class,'edit'])->name('plantillas.edit');
+Route::put('plantillas/{plantilla}',[PlantillasController::class,'update'])->name('plantillas.update');

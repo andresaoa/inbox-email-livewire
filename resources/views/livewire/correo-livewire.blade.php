@@ -104,7 +104,7 @@
                                             <p>CC email : {{ $item->cc_email }}</p>
 
                                             <br />
-                                            <p>{{ $item->cuerpo_mensaje }}</p>
+                                            <p>{!! $item->cuerpo_mensaje !!}</p>
                                             <br />
                                             <p><strong>Enviado</strong><br />{{ $item->fecha_envio }}</p>
                                         </div>

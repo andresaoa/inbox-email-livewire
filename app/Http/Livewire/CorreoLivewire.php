@@ -40,7 +40,7 @@ class CorreoLivewire extends Component
             return view('livewire.correo-livewire',compact('plantillas','correos'));
         }
         else {
-            return redirect()->route('login.index');
+            return view('login');
         }
     }
     // Cambio de vista a nuevo correo donde esta el formulario

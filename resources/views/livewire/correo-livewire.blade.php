@@ -3,8 +3,12 @@
         <div class="user-head">
             <h2 class="text-center">AOA EMAIL</h2>
             <div class="user-name">
-                <h5><a href="#">Alireza Zare</a></h5>
-                <span><a href="#">Info.Ali.Pci@Gmail.com</a></span>
+                <h5><a href="#">{{ Session::get('key')->nombre }}</a></h5>
+                <span><a href="#">{{ Session::get('key')->email }}</a></span>
+                <br>
+                <span type="button"  data-toggle="modal" data-target="#exampleModal">
+                    Cerrar Sesion
+                </span>
             </div>
         </div>
         <div class="inbox-body">
@@ -22,63 +26,67 @@
         </div>
     </aside>
     @if ($entrada == 1)
-        <aside class="lg-side">
-            <form>
-                <div class="inbox-head">
-
-                    <div class="form-group row">
-                        <label for="siniestro" class="col-sm-2 col-form-label">Siniestro: </label>
-                        <div class="col-sm-10">
-                            <input type="number" wire:model="usuario" class="form-control" id="siniestro"
-                                placeholder="111222" />
+        <div class="container mt-4">
+            <form wire:submit.prevent="seguro">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputEmail4">Siniestro: </label>
+                        <div class="input-group mb-3">
+                            <input type="number" wire:model="usuario" class="form-control"
+                                aria-label="Recipient's username" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button"
+                                    wire:click="siniestro('{{ $usuario }}')">Buscar</button>
+                            </div>
                         </div>
+                        @error('usuario') <span class="error">{{ $message }}</span> @enderror
                     </div>
-                    <div class="form-group row">
-                        <label for="email" class="col-sm-2 col-form-label">Correo Cliente:</label>
-                        <div class="col-sm-10">
-                            <input type="text" wire:model="email" class="form-control" id="email" />
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="asunto" class="col-sm-2 col-form-label">Asunto:</label>
-                        <div class="col-sm-10">
-                            <input type="text" wire:model="asunto" class="form-control" id="asunto"
-                                placeholder="Caso Adjudicado" />
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="name" class="col-sm-2 col-form-label">Nombre:</label>
-                        <div class="col-sm-10">
-                            <input type="text" readonly disabled class="form-control" id="name"
-                                placeholder="Usuario Prueba" />
-                        </div>
-                    </div>
-
-                </div>
-                <div class="container-fluid mt-4">
-                    <div class="row">
-                        <div class="col-sm" wire:ignore>
-                            <textarea wire:model="cuerpo" id="editor" cols="60" rows="10">
-
-                            {{-- {{$cuerpo}} --}}
-                        </textarea>
-                        </div>
-                        <div class="col-sm">
-                            <ul class="list-group">
-                                <li class="list-group-item">Plantilla predefinidas</li>
-                                @foreach ($plantillas as $index => $plantilla)
-                                    <li class="list-group-item mouse-hover"
-                                        wire:click="PlantillaRelleno('{{ $plantilla->asunto_base }}')">
-                                        {{ $index + 1 }} -
-                                        {{ $plantilla->asunto_base }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputPassword4">Nombre:</label>
+                        <input type="text" wire:model="nombre" readonly disabled class="form-control" id="name" />
                     </div>
                 </div>
-                <a wire:click="$emit('seguroenviar')" class="btn btn-primary ml-4">Enviar</a>
+                {{--  --}}
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputAddress">Correo Cliente:</label>
+                        <input type="text" wire:model="email" readonly disabled class="form-control" id="email" />
+                        @error('email') <span class="error">{{ $message }}</span> @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputAddress2">Asunto:</label>
+                        <input type="text" wire:model="asunto" class="form-control" id="asunto" />
+                        @error('asunto') <span class="error">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="inputState">Plantillas:</label>
+
+
+                        <select class="custom-select" multiple>
+                            @foreach ($plantillas as $index => $plantilla)
+                                <option
+                                    wire:click="PlantillaRelleno('{{ $plantilla->asunto_base }}','{{ $plantilla->cuerpo_base }}')">
+                                    {{ $index + 1 }} -
+                                    {{ $plantilla->asunto_base }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputAddress2">Cuerpo:</label>
+                    <textarea class="form-control" wire:model="cuerpo" id="editor" cols="30" rows="6">
+                    </textarea>
+                    @error('cuerpo') <span class="error">{{ $message }}</span> @enderror
+                </div>
+
+                <button type="submit" class="btn btn-primary">Enviar Correo</button>
             </form>
-        </aside>
+        </div>
+
     @else
         <div class="container mt-4">
             <div class="row inbox-wrapper">
@@ -98,11 +106,12 @@
                                             <br />
                                             <p>{{ $item->cuerpo_mensaje }}</p>
                                             <br />
-                                            <p><strong>Envaido</strong><br />{{$item->fecha_envio}}</p>
+                                            <p><strong>Enviado</strong><br />{{ $item->fecha_envio }}</p>
                                         </div>
                                         @if ($item->adjunto)
                                             <div class="email-attachments">
-                                                <div class="title">Archivos <span>({{count($item->adjunto)}})</span>
+                                                <div class="title">Archivos
+                                                    <span>({{ count($item->adjunto) }})</span>
                                                 </div>
                                                 <ul>
                                                     <li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24"
@@ -123,7 +132,16 @@
                                     </div>
                                 @endforeach
                             </div>
-
+                            <address style="font-size:8px">
+                                <img class="w-100" alt=""
+                                    src="https://www.aoacolombia.com/wp-content/uploads/2019/09/cropped-logotipo-aoa-colombia-1.png"
+                                    width="250px"><br>
+                                <p> ADMINISTRACIÓN OPERATIVA AUTOMOTRIZ </p>
+                                <p>NIT.: 900.174.552-5</p>
+                                <p>Carrera 69B 98A-10 Bogotá D.C.</p>
+                                <p>Pbx: (057) 1 7560510 Fax (057) 1 7560512 </p>
+                                <p>www.aoacolombia.com</p>
+                            </address>
                         </div>
                     </div>
                 </div>
@@ -135,38 +153,41 @@
         <script>
             Livewire.on('seguroenviar', () => {
                 Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
+                    title: '¿Esta seguro de enviar el correo?',
+                    text: "",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonText: 'Si, deseo enviarlo!'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         Livewire.emitTo('correo-livewire', 'save');
-
-                        Swal.fire(
-                            'Deleted!',
-                            'Your file has been deleted.',
-                            'success'
-                        )
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Correo Enviado',
+                            showConfirmButton: false,
+                            timer: 2500
+                        })
                     }
                 })
             })
         </script>
-        {{-- <script src="https://cdn.ckeditor.com/ckeditor5/31.1.0/classic/ckeditor.js"></script>
-        <script>
-            ClassicEditor
-                .create(document.querySelector('#editor'))
-                .then(function(editor) {
-                    editor.model.document.on('change:data', () => {
-                        @this.set('cuerpo_mensaje', editor.getData());
-                    })
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        </script> --}}
     @endpush
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <h2>¿Estas seguro?</h2>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" wire:click="cerrarsession()"
+                        data-dismiss="modal">Cerrar Session</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

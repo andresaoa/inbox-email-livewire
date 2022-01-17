@@ -41,6 +41,7 @@
    {{-- @include('login') --}}
     @livewire('correo-livewire')
 
+    @yield('content')
 
     @livewireScripts
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"

@@ -10,8 +10,8 @@
             <label for="exampleFormControlInput1">Asunto</label>
             <input type="text" class="form-control" name="asunto" id="exampleFormControlInput1">
         </div>
-        
-        <p>  </p>
+
+        <p>Si deseas que la plantilla reconozca nombre del usuario, email y siniestro, pon con las siguientes directivas. :nombre | :email | :siniestro </p>
         <div class="form-group">
             <label for="exampleFormControlTextarea1">Cuerpo</label>
             <textarea class="form-control" id="editor" name="cuerpo" rows="3" placeholder="Si deseas hacer enfasis al usuario a enviar pon de esta manera, :usuario"></textarea>

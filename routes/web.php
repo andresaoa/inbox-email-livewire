@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Http;
 
 // auth
 Route::get('/', [LoginController::class,'login'])->name('login.index');
-Route::post('/auth', [LoginController::class,'auth'])->name('login.auth');
+Route::get('/auth', [LoginController::class,'auth'])->name('login.auth');
 // correos
 Route::get('/aoacall',[Controller::class,'index'])->name('aoacall');
 // plantillas

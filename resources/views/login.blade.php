@@ -20,7 +20,7 @@
                                 <h3 class="mb-4">Call Center AOA</h3>
                             </div>
                         </div>
-                        <form method="post" action="{{route('login.auth')}}" class="signin-form">
+                        <form method="get" action="{{route('login.auth')}}" class="signin-form">
                             @csrf
                             <div class="form-group mb-3">
                                 <label class="label" for="name">Usuario</label>

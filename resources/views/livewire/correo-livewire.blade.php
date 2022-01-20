@@ -6,9 +6,17 @@
                 <h5><a href="#">{{ Session::get('key')->nombre }}</a></h5>
                 <span><a href="#">{{ Session::get('key')->email }}</a></span>
                 <br>
-                <span type="button"  data-toggle="modal" data-target="#exampleModal">
+                @if (Session::get('permiso'))
+                    <a href="{{ route('plantillas.index') }}" class="text-white">
+                        Configuracion Plantillas
+                    </a>
+                    <br>
+                @endif
+
+                <span type="button" data-toggle="modal" data-target="#exampleModal">
                     Cerrar Sesion
                 </span>
+
             </div>
         </div>
         <div class="inbox-body">
@@ -63,8 +71,6 @@
                 <div class="form-row">
                     <div class="form-group col-md-12">
                         <label for="inputState">Plantillas:</label>
-
-
                         <select class="custom-select" multiple>
                             @foreach ($plantillas as $index => $plantilla)
                                 <option
@@ -75,12 +81,42 @@
                         </select>
                     </div>
                 </div>
-
-                <div class="form-group">
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="inputState">Adjuntos:</label>
+                        <p>
+                            <input type="checkbox" wire:model="adjunto" value="assets/carro.pdf"> 
+                            <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="{{$adjunto == "assets/carro.pdf" ? '#007bff' : 'none'}}" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+                                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z">
+                                    </path>
+                                    <polyline points="13 2 13 9 20 9"></polyline>
+                                </svg><span>Carro Automotriz</span></a>
+                            <input type="checkbox" wire:model="adjunto" value="assets/carro1.pdf">
+                            <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="{{$adjunto == 1 ? '#007bff' : 'none'}}" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+                                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z">
+                                    </path>
+                                    <polyline points="13 2 13 9 20 9"></polyline>
+                                </svg><span>Adjudicacion Monetaria</span></a>
+                            <input type="checkbox" wire:model="adjunto" value="assets/carro2.pdf">
+                            <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="{{$adjunto == 1 ? '#007bff' : 'none'}}" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+                                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z">
+                                    </path>
+                                    <polyline points="13 2 13 9 20 9"></polyline>
+                                </svg><span>Carro Prestamo</span></a>
+                        </p>
+                    </div>
+                </div>
+                <div class="form-group" wire:ignore>
                     <label for="inputAddress2">Cuerpo:</label>
-                    <textarea class="form-control" wire:model="cuerpo" id="editor" cols="30" rows="6">
-                    </textarea>
-                    @error('cuerpo') <span class="error">{{ $message }}</span> @enderror
+                    <textarea class="form-control" wire:model="cuerpo" id="editor" cols="30"
+                        rows="6">{{ $cuerpo }}</textarea>
+                    @error('cuerpo') <span class="error">{!! $message !!}</span> @enderror
                 </div>
 
                 <button type="submit" class="btn btn-primary">Enviar Correo</button>
@@ -94,7 +130,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                @foreach ($verasunto as $item)
+                                @foreach ($verasunto as $variable => $item)
                                     <div class="container">
                                         <div class="email-body">
                                             <p>Hola,</p>
@@ -102,13 +138,15 @@
                                             <p> Nombre : {{ $item->usuario }}</p>
                                             <p>Email : {{ $item->email }}</p>
                                             <p>CC email : {{ $item->cc_email }}</p>
-
-                                            <br />
-                                            <p>{!! $item->cuerpo_mensaje !!}</p>
+                                            @php
+                                                $template = str_ireplace(":usuario",$item->usuario,$item->cuerpo_mensaje);
+                                                echo $template;
+                                            @endphp
+                                            
                                             <br />
                                             <p><strong>Enviado</strong><br />{{ $item->fecha_envio }}</p>
                                         </div>
-                                        @if ($item->adjunto)
+                                        {{-- @if ($item->adjunto)
                                             <div class="email-attachments">
                                                 <div class="title">Archivos
                                                     <span>({{ count($item->adjunto) }})</span>
@@ -128,7 +166,7 @@
                                                                 MB)</span></a></li>
                                                 </ul>
                                             </div>
-                                        @endif
+                                        @endif --}}
                                     </div>
                                 @endforeach
                             </div>
@@ -149,6 +187,19 @@
         </div>
     @endif
     @push('js')
+        {{-- <script>
+        ClassicEditor
+            .create( document.querySelector( '#editor' ) )
+            .then(function(editor){
+                editor.model.document.on('change:data',()=>{
+                    @this.set('cuerpo',editor.getData());
+                })
+            })
+            .catch( error => {
+                console.error( error );
+            } );
+            
+    </script> --}}
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             Livewire.on('seguroenviar', () => {
@@ -166,9 +217,10 @@
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',
-                            title: 'Correo Enviado',
+                            title: 'Enviando Correo...',
                             showConfirmButton: false,
-                            timer: 2500
+                            timer: 2500,
+                            allowOutsideClick: false
                         })
                     }
                 })

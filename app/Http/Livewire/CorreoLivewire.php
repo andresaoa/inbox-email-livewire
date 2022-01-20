@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Session;
 class CorreoLivewire extends Component
 {
     // variables globales (se usan en las vistan y en el controlador)
-    public $entrada=1,$cuerpo,$usuario,$email,$asunto="",$verasunto,$nombre;
+    public $entrada=1,$cuerpo,$usuario,$email,$asunto="",$verasunto,$nombre,$siniestro,$adjunto=[];
     // escuchador para el modal si esta seguro enviar el email
     protected $listeners = ['save'];
     // reglas , requeridos , minimos y email
@@ -33,9 +33,9 @@ class CorreoLivewire extends Component
     public function render()
     {
         if (Session::get('key') != null) {
-            $plantillas = Http::get('http://127.0.0.1:8000/api/callcenter/plantillas?token=7764c426ede8405071b17710b1759e6a');
+            $plantillas = Http::get('http://127.0.0.1:8000/api/callcenter/plantillas?token='.Session::get('key')->token);
             $plantillas = json_decode($plantillas);
-            $correos = Http::get('http://127.0.0.1:8000/api/callcenter/correos?token=7764c426ede8405071b17710b1759e6a');
+            $correos = Http::get('http://127.0.0.1:8000/api/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->id);
             $correos = json_decode($correos);
             return view('livewire.correo-livewire',compact('plantillas','correos'));
         }
@@ -52,7 +52,7 @@ class CorreoLivewire extends Component
     public function VerCorreo($id)
     {
         $this->entrada = 2;
-        $ver = Http::get('http://127.0.0.1:8000/api/callcenter/correos/{correo}?token=7764c426ede8405071b17710b1759e6a&id='.$id);
+        $ver = Http::get('http://127.0.0.1:8000/api/callcenter/correos/{correo}?token='.Session::get('key')->token.'&id='.$id);
         $ver = json_decode($ver);
         $this->verasunto = $ver;
     }
@@ -69,14 +69,19 @@ class CorreoLivewire extends Component
         $cuerpo_mensaje = $this->cuerpo;
         $email = $this->email;
         $usuario = $this->usuario;
+        $adjunto = $this->adjunto;
         $this->resetExcept('entrada');
         $response = Http::post('http://127.0.0.1:8000/api/callcenter/correos/recive', [
-            'usuario' => $usuario,
+            'usuario' => Session::get('key')->id,
             'cuerpo_mensaje' => $cuerpo_mensaje,
             'email'=> $email,
             'asunto'=> $asunto,
-            'token' => '7764c426ede8405071b17710b1759e6a'
+            'siniestro' => $usuario,
+            'adjunto' => $adjunto == [] ? null : $adjunto,
+            'token' => Session::get('key')->token
         ]);
+        $response = json_decode($response);
+        dd($response);
     }
     // valida las rules y emite el modal
     public function seguro()
@@ -92,13 +97,14 @@ class CorreoLivewire extends Component
     // api para la consulta de siniestro
     public function siniestro($usuario)
     {
-        $siniestro = Http::get("http://127.0.0.1:8000/api/siniestro/{siniestro}?token=427a903c0256cc73f7d2367f41e3236a220108162855&id=".$usuario);
+        $siniestro = Http::get('http://127.0.0.1:8000/api/siniestro/{siniestro}?token=427a903c0256cc73f7d2367f41e3236a220108162855&id='.$usuario);
         $siniestro = json_decode($siniestro);
         if ($siniestro != null) {
             $this->nombre = $siniestro->declarante_nombre;
             $this->email = $siniestro->declarante_email;
         }
     }
+    // cerrar session
     public function cerrarsession()
     {
         Session::forget('key');

@@ -16,14 +16,13 @@ class LoginController extends Controller
         else {
             return view('login');
         }
-      
     }
-    public function auth(Request $request )
+    public function auth(Request $request)
     {
         $response = Http::post('http://127.0.0.1:8000/api/callcenter/login', [
             'usuario' => $request->usuario,
             'clave' => $request->clave,
-            'token' => '7764c426ede8405071b17710b1759e6a'
+            'token' => '876d7aea36089672b11e1cd60e9ccaec'
         ]);
         $response = json_decode($response);
         if ($response->{'Msj'} === "¡Credenciales incorrectas!") {
@@ -33,6 +32,7 @@ class LoginController extends Controller
         }
         else {
             session(['key' => $response->{'datos'}]);
+            session(['permiso' => $response->{'permiso'}]);
             return redirect()->to('aoacall');
             // dd([Session::get('key')]);
         }

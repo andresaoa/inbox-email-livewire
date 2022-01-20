@@ -39,6 +39,9 @@
         background-attachment: fixed;
         /* height: 100%; */
     }
+    .ck-editor__editable_inline {
+            min-height: 300px;
+        }
     </style>
     @livewireStyles
 </head>
@@ -61,6 +64,11 @@
             .catch( error => {
                 console.error( error );
             } );
+            
+            $("#hola").click(function () {
+    $("#editor").append("your text to append");
+});
+        
     </script>
     @stack('js')
 </body>

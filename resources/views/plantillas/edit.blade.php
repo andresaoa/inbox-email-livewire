@@ -1,7 +1,7 @@
 @extends('layouts.guest')
 <div class="container">
     <h2 class="text-center mt-4 mb-4">Actualizar plantillas</h2>
-    <button></button>
+    <button class="btn btn-success" onclick="history.back()">Volver</button>
     <form method="post" action="{{route('plantillas.update',$id[0]->id)}}">
         @method('PUT')
         @csrf

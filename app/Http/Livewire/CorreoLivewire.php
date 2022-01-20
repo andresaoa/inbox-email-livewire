@@ -80,8 +80,8 @@ class CorreoLivewire extends Component
             'adjunto' => $adjunto == [] ? null : $adjunto,
             'token' => Session::get('key')->token
         ]);
-        $response = json_decode($response);
-        dd($response);
+        // $response = json_decode($response);
+        // dd($response);
     }
     // valida las rules y emite el modal
     public function seguro()

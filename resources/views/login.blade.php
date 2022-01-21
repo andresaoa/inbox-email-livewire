@@ -13,7 +13,6 @@
                         style="background-image: url(https://www.creativografico.dev/webAOA/wp-content/uploads/2019/10/fondo-intranet-AOA-Colombia.jpg);">
                     </div>
                    
-
                     <div class="login-wrap p-4 p-md-5">
                         <div class="d-flex">
                             <div class="w-100">
@@ -31,7 +30,7 @@
                                 <input type="password" name="clave" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <button type="submit" class="form-control btn btn-primary rounded submit px-3">Iniciar Sesion</button>
+                                <button type="submit" class="form-control btn aoa-btn text-white rounded submit px-3">Iniciar Sesion</button>
                             </div>
                         </form>
                     </div>

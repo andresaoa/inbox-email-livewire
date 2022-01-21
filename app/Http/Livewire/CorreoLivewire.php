@@ -60,7 +60,7 @@ class CorreoLivewire extends Component
     public function PlantillaRelleno($asunto_base,$cuerpo_base)
     {
         $this->asunto = $asunto_base;
-        $this->cuerpo = $cuerpo_base;
+        $this->cuerpo = strip_tags($cuerpo_base);
     }
     // al aceotar el modal de guardar se emitira la api post para insertar y se actualizara sin recargar la vista
     public function save()

@@ -15,6 +15,6 @@
                 {!!$id[0]->cuerpo_base!!}
             </textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <button type="submit" class="btn btn-primary" style="background-color: #003057;">Actualizar</button>
     </form>
 </div>

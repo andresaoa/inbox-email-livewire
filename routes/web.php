@@ -3,6 +3,7 @@
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PlantillasController;
+use App\Http\Controllers\RolController;
 use App\Http\Livewire\CorreoLivewire;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
@@ -28,3 +29,5 @@ Route::get('plantillas/create',[PlantillasController::class,'create'])->name('pl
 Route::post('plantilla/store',[PlantillasController::class,'store'])->name('plantillas.store');
 Route::get('plantillas/{plantilla}/edit',[PlantillasController::class,'edit'])->name('plantillas.edit');
 Route::put('plantillas/{plantilla}',[PlantillasController::class,'update'])->name('plantillas.update');
+// rol
+Route::get('rol',[RolController::class,'index'])->name('rol.index');

@@ -1,26 +1,20 @@
 <div class="mail-box">
-    <link rel="stylesheet"
-    href=
-"https://pro.fontawesome.com/releases/v5.10.0/css/all.css" 
-    integrity=
-"sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
-    crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <!--Internal CSS start-->
+    <style>
+        textarea {
+            padding: 3%;
+            border-color: #957dad;
+            border-width: thick;
+        }
 
-<!--Internal CSS start-->
-<style>
-  
-    
-  textarea {
-      padding: 3%;
-      border-color: #957dad;
-      border-width: thick;
-  }
-    
-  .flex-box {
-      display: flex;
-      justify-content: center;
-  }
-</style>
+        .flex-box {
+            display: flex;
+            justify-content: center;
+        }
+
+    </style>
     <aside class="sm-side h-100">
         <div class="user-head">
             <h2 class="text-center">AOA EMAIL</h2>
@@ -31,6 +25,12 @@
                 @if (Session::get('permiso'))
                     <a href="{{ route('plantillas.index') }}" class="text-white">
                         Configuracion Plantillas
+                    </a>
+                    <br>
+                @endif
+                @if (Session::get('admin') == 'si')
+                    <a href="{{ route('rol.index') }}" class="text-white">
+                        Permisos
                     </a>
                     <br>
                 @endif
@@ -46,13 +46,20 @@
                 Nuevo Correo
             </a>
             <div class="anyClass">
-                @foreach ($correos as $correo)
-                    <div class="bg-white p-3 mt-2 d-flex mouse-hover " wire:click="VerCorreo({{ $correo->id }})">
-                        <div class="flex-grow-1">{{ Str::limit($correo->asunto, 10) }}</div>
-                        <small>{{ $correo->fecha_envio }}</small>
-                    </div>
-                @endforeach
+                <table id="example" class="table table-striped">
+                    <tbody>
+                        @foreach ($correos as $correo)
+                            <tr class="mouse-hover" wire:click="VerCorreo({{ $correo->id }})">
+                                <th scope="row">{{$correo->id}}</th>
+                                <td>{{ Str::limit($correo->asunto, 10) }}</td>
+                                <td class="font-weight-light">{{ \Carbon\Carbon::parse($correo->fecha_envio)->format('d-m-Y') }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-center">{{$correos->links()}}</div>
             </div>
+            
         </div>
     </aside>
     @if ($entrada == 1)
@@ -94,12 +101,12 @@
                     <div class="form-group col-md-12">
                         <label for="inputState">Plantillas:</label>
                         <select id="pla" class="custom-select" multiple>
-                            @foreach ($plantillas as $index => $plantilla)
-                                <option 
+                            {{-- @foreach ($plantillas as $index => $plantilla)
+                                <option
                                     wire:click="PlantillaRelleno('{{ $plantilla->asunto_base }}','{{ $plantilla->cuerpo_base }}')">
                                     {{ $index + 1 }} -
                                     {{ $plantilla->asunto_base }}</option>
-                            @endforeach
+                            @endforeach --}}
                         </select>
                     </div>
                 </div>
@@ -107,26 +114,30 @@
                     <div class="form-group col-md-12">
                         <label for="inputState">Adjuntos:</label>
                         <p>
-                            <input type="checkbox" wire:model="adjunto" value="assets/carro.pdf"> 
+                            <input type="checkbox" wire:model="adjunto" value="assets/carro.pdf">
                             <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="{{$adjunto == "assets/carro.pdf" ? '#003057' : 'none'}}" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+                                    viewBox="0 0 24 24"
+                                    fill="{{ $adjunto == 'assets/carro.pdf' ? '#003057' : 'none' }}"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-file">
                                     <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z">
                                     </path>
                                     <polyline points="13 2 13 9 20 9"></polyline>
                                 </svg><span>Carro Automotriz</span></a>
                             <input type="checkbox" wire:model="adjunto" value="assets/carro1.pdf">
                             <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="{{$adjunto == 1 ? '#003057' : 'none'}}" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+                                    viewBox="0 0 24 24" fill="{{ $adjunto == 1 ? '#003057' : 'none' }}"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-file">
                                     <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z">
                                     </path>
                                     <polyline points="13 2 13 9 20 9"></polyline>
                                 </svg><span>Adjudicacion Monetaria</span></a>
                             <input type="checkbox" wire:model="adjunto" value="assets/carro2.pdf">
                             <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="{{$adjunto == 1 ? '#003057' : 'none'}}" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+                                    viewBox="0 0 24 24" fill="{{ $adjunto == 1 ? '#003057' : 'none' }}"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-file">
                                     <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z">
                                     </path>
                                     <polyline points="13 2 13 9 20 9"></polyline>
@@ -140,69 +151,33 @@
                         <div class="flex-box">
                             <div class="row">
                                 <div class="col">
-                                    <button type="button" 
-                                            onclick="f1()" 
-                                            class=" shadow-sm btn btn-outline-secondary" 
-                                            data-toggle="tooltip"
-                                            data-placement="top" 
-                                            title="Bold Text">
-                            Bold</button>
-                                    <button type="button" 
-                                            onclick="f2()" 
-                                            class="shadow-sm btn btn-outline-success" 
-                                            data-toggle="tooltip" 
-                                            data-placement="top" 
-                                            title="Italic Text">
-                            Italic</button>
-                                    <button type="button" 
-                                            onclick="f3()" 
-                                            class=" shadow-sm btn btn-outline-primary" 
-                                            data-toggle="tooltip" 
-                                            data-placement="top"
-                                            title="Left Align">
-                            <i class="fas fa-align-left"></i></button>
-                                    <button type="button" 
-                                            onclick="f4()" 
-                                            class="btn shadow-sm btn-outline-secondary" 
-                                            data-toggle="tooltip" 
-                                            data-placement="top" 
-                                            title="Center Align">
-                            <i class="fas fa-align-center"></i></button>
-                                    <button type="button" 
-                                            onclick="f5()" 
-                                            class="btn shadow-sm btn-outline-primary" 
-                                            data-toggle="tooltip" 
-                                            data-placement="top" 
-                                            title="Right Align">
-                            <i class="fas fa-align-right"></i></button>
-                                    <button type="button" 
-                                            onclick="f6()" 
-                                            class="btn shadow-sm btn-outline-secondary" 
-                                            data-toggle="tooltip" 
-                                            data-placement="top" 
-                                            title="Uppercase Text">
-                            Upper Case</button>
-                                    <button type="button" 
-                                            onclick="f7()" 
-                                            class="btn shadow-sm btn-outline-primary" 
-                                            data-toggle="tooltip" 
-                                            data-placement="top" 
-                                            title="Lowercase Text">
-                            Lower Case</button>
-                                    <button type="button" 
-                                            onclick="f8()" 
-                                            class="btn shadow-sm btn-outline-primary" 
-                                            data-toggle="tooltip" 
-                                            data-placement="top" 
-                                            title="Capitalize Text">
-                            Capitalize</button>
-                                    <button type="button" 
-                                            onclick="f9()" 
-                                            class="btn shadow-sm btn-outline-primary side" 
-                                            data-toggle="tooltip" 
-                                            data-placement="top" 
-                                            title="Tooltip on top">
-                            Clear Text</button>
+                                    <button type="button" onclick="f1()" class=" shadow-sm btn btn-outline-secondary"
+                                        data-toggle="tooltip" data-placement="top" title="Bold Text">
+                                        Bold</button>
+                                    <button type="button" onclick="f2()" class="shadow-sm btn btn-outline-success"
+                                        data-toggle="tooltip" data-placement="top" title="Italic Text">
+                                        Italic</button>
+                                    <button type="button" onclick="f3()" class=" shadow-sm btn btn-outline-primary"
+                                        data-toggle="tooltip" data-placement="top" title="Left Align">
+                                        <i class="fas fa-align-left"></i></button>
+                                    <button type="button" onclick="f4()" class="btn shadow-sm btn-outline-secondary"
+                                        data-toggle="tooltip" data-placement="top" title="Center Align">
+                                        <i class="fas fa-align-center"></i></button>
+                                    <button type="button" onclick="f5()" class="btn shadow-sm btn-outline-primary"
+                                        data-toggle="tooltip" data-placement="top" title="Right Align">
+                                        <i class="fas fa-align-right"></i></button>
+                                    <button type="button" onclick="f6()" class="btn shadow-sm btn-outline-secondary"
+                                        data-toggle="tooltip" data-placement="top" title="Uppercase Text">
+                                        Upper Case</button>
+                                    <button type="button" onclick="f7()" class="btn shadow-sm btn-outline-primary"
+                                        data-toggle="tooltip" data-placement="top" title="Lowercase Text">
+                                        Lower Case</button>
+                                    <button type="button" onclick="f8()" class="btn shadow-sm btn-outline-primary"
+                                        data-toggle="tooltip" data-placement="top" title="Capitalize Text">
+                                        Capitalize</button>
+                                    <button type="button" onclick="f9()" class="btn shadow-sm btn-outline-primary side"
+                                        data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+                                        Clear Text</button>
                                 </div>
                             </div>
                         </div>
@@ -212,13 +187,9 @@
                             </div>
                             <div class="col-md-6 col-sm-9">
                                 <div class="flex-box">
-                                    <textarea 
-                                    wire:model="cuerpo" id="textarea1" 
-                                              class="form-control" 
-                                              name="name" 
-                                              rows="10" 
-                                              cols="100" 
-                                              placeholder="Your text here ">{!! $cuerpo !!}</textarea>
+                                    <textarea wire:model="cuerpo" id="textarea1" class="form-control" name="name"
+                                        rows="10" cols="100"
+                                        placeholder="Your text here ">{!! $cuerpo !!}</textarea>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -231,7 +202,7 @@
                 <button type="submit" class="btn aoa-btn text-white">Enviar Correo</button>
             </form>
         </div>
-        
+
     @else
         <div class="container mt-4">
             <div class="row inbox-wrapper">
@@ -246,10 +217,10 @@
                                             <p>Email : {{ $item->email }}</p>
                                             <p>CC email : {{ $item->cc_email }}</p>
                                             @php
-                                                $template = str_ireplace(":usuario",$item->usuario,$item->cuerpo_mensaje);
+                                                $template = str_ireplace(':usuario', $item->usuario, $item->cuerpo_mensaje);
                                                 echo $template;
                                             @endphp
-                                            
+
                                             <br />
                                             <p><strong>Enviado</strong><br />{{ $item->fecha_envio }}</p>
                                         </div>
@@ -338,37 +309,37 @@
                 document.getElementById("textarea1").style.textTransform = "capitalize";
                 document.getElementById("textarea1").value = " ";
             }
-           
-            $(document).ready(function(){
-                
+
+            $(document).ready(function() {
+
             });
-        
         </script>
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-                Livewire.on('seguroenviar', () => {
-                    Swal.fire({
-                        title: '¿Esta seguro de enviar el correo?',
-                        text: "",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Si, deseo enviarlo!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            Livewire.emitTo('correo-livewire', 'save');
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'success',
-                                title: 'Enviando Correo...',
-                                showConfirmButton: false,
-                                timer: 2500,
-                                allowOutsideClick: false
-                            })
-                        }
-                    })
+            Livewire.on('seguroenviar', () => {
+                Swal.fire({
+                    title: '¿Esta seguro de enviar el correo?',
+                    text: "",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, deseo enviarlo!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Livewire.emitTo('correo-livewire', 'save');
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Enviando Correo...',
+                            showConfirmButton: false,
+                            timer: 2500,
+                            allowOutsideClick: false
+                        })
+                    }
                 })
+            })
         </script>
+
     @endpush
 </div>

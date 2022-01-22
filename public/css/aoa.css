@@ -277,7 +277,7 @@
     padding: 3px 5px;
   }
   .inbox-body {
-    padding: 20px;
+    padding: 10px;
     min-height: 100vh;
   }
   .btn-compose {
@@ -609,10 +609,23 @@
     }
   }
   .anyClass{
-    overflow-y: scroll;
+    margin-top: 20px;
+    /* overflow-y: scroll; */
     height:400px;
+    width: 100%;
   }
   .aoa-btn{
     background-color: #003057;
   }
+  /* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
   

@@ -12,7 +12,7 @@ class CorreoLivewire extends Component
     use WithPagination;
     protected $paginationTheme = 'simple-bootstrap';
     // variables globales (se usan en las vistan y en el controlador)
-    public $entrada=1,$cuerpo,$usuario,$email,$asunto="",$verasunto,$nombre,$siniestro,$adjunto=[];
+    public $entrada=1,$cuerpo,$usuario,$email,$asunto="",$verasunto,$nombre,$siniestro,$adjunto=[],$let="",$correosbus;
     // escuchador para el modal si esta seguro enviar el email
     protected $listeners = ['save'];
     // reglas , requeridos , minimos y email
@@ -42,10 +42,11 @@ class CorreoLivewire extends Component
             $correos = Http::get(env('PRODUCTION_URL').'/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->id)->body();
             $correos = collect(json_decode($correos));
             if ($correos == null) {
-                $correos = Http::get(env('PRODUCTION_URL').'/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->id)->body();
+                $correos = Http::get(env('PRODUCTION_URL').'/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->id.'&asunto='.$this->let)->body();
                 $correos = collect(json_decode($correos));
             }
-            return view('livewire.correo-livewire',['correos' =>$correos->paginate(10)]);
+            $this->letra();
+            return view('livewire.correo-livewire',['correos' =>$correos->paginate(10),'plantillas'=>$plantillas]);
         }
         else {
             return view('login');
@@ -117,5 +118,16 @@ class CorreoLivewire extends Component
     {
         Session::flush();
         return view('login');
+    }
+    // busqueda input correos
+    public function letra()
+    {
+        $this->correosbus = Http::get(env('PRODUCTION_URL').'/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->id.'&asunto='.$this->let)->body();
+        $this->correosbus = collect(json_decode($this->correosbus));
+    }
+
+    public function updatingLet()
+    {
+        $this->resetPage();
     }
 }

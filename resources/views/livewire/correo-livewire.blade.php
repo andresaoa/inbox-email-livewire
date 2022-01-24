@@ -1,9 +1,10 @@
 <div class="mail-box">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+        <link rel="stylesheet" href="{{asset('js/jquery-ui/jquery-ui.min.css')}}">
     <!--Internal CSS start-->
     <style>
-        textarea {
+        /* textarea {
             padding: 3%;
             border-color: #957dad;
             border-width: thick;
@@ -12,7 +13,7 @@
         .flex-box {
             display: flex;
             justify-content: center;
-        }
+        } */
 
     </style>
     <aside class="sm-side h-100">
@@ -46,18 +47,24 @@
                 Nuevo Correo
             </a>
             <div class="anyClass">
+                <input type="text" wire:keydown="letra" wire:model="let" class="form-control mb-2" placeholder="Seleccione el asunto que busca">
                 <table id="example" class="table table-striped">
                     <tbody>
-                        @foreach ($correos as $correo)
-                            <tr class="mouse-hover" wire:click="VerCorreo({{ $correo->id }})">
-                                <th scope="row">{{$correo->id}}</th>
-                                <td>{{ Str::limit($correo->asunto, 10) }}</td>
-                                <td class="font-weight-light">{{ \Carbon\Carbon::parse($correo->fecha_envio)->format('d-m-Y') }}</td>
-                            </tr>
-                        @endforeach
+                        @if ($correosbus)
+                            @foreach ($correosbus->paginate(10) as $correo)
+                                <tr class="mouse-hover" wire:click="VerCorreo({{ $correo->id }})">
+                                    <th scope="row">{{$correo->id}}</th>
+                                    <td>{{ Str::limit($correo->asunto, 10) }}</td>
+                                    <td class="font-weight-light">{{ \Carbon\Carbon::parse($correo->fecha_envio)->format('d-m-Y') }}</td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
+                @if (count($correosbus) >= 9)
                 <div class="d-flex justify-content-center">{{$correos->links()}}</div>
+                @endif
+                
             </div>
             
         </div>
@@ -101,12 +108,12 @@
                     <div class="form-group col-md-12">
                         <label for="inputState">Plantillas:</label>
                         <select id="pla" class="custom-select" multiple>
-                            {{-- @foreach ($plantillas as $index => $plantilla)
+                            @foreach ($plantillas as $index => $plantilla)
                                 <option
                                     wire:click="PlantillaRelleno('{{ $plantilla->asunto_base }}','{{ $plantilla->cuerpo_base }}')">
                                     {{ $index + 1 }} -
                                     {{ $plantilla->asunto_base }}</option>
-                            @endforeach --}}
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -183,16 +190,12 @@
                         </div>
                         <br>
                         <div class="row">
-                            <div class="col-md-3 col-sm-3">
-                            </div>
-                            <div class="col-md-6 col-sm-9">
+                            <div class="col-md-12 col-sm-12">
                                 <div class="flex-box">
                                     <textarea wire:model="cuerpo" id="textarea1" class="form-control" name="name"
                                         rows="10" cols="100"
-                                        placeholder="Your text here ">{!! $cuerpo !!}</textarea>
+                                        placeholder="Escriba su cuerpo Aca">{!! $cuerpo !!}</textarea>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
                             </div>
                         </div>
                     </section>
@@ -340,6 +343,24 @@
                 })
             })
         </script>
-
+        {{-- <script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+        <script src="{{asset('js/jquery-ui/jquery-ui.min.js')}}"></script>
+        <script>
+            var cursos = ['text','array','html','css'];
+            $('#search').autocomplete({
+                source: function(request,response) {
+                    $.ajax({
+                        url: "http://127.0.0.1:8000/api/callcenter/correos?token=MfNdmxEdsjeeZA43Mn49ObZXBWN1DMFhI8NdUGL2&id_user=2&asunto="+request.asunto,
+                        dataType: 'json',
+                        success: function(data){
+                            response(data)
+                        }
+                    });
+                }
+            });
+        </script> --}}
     @endpush
 </div>

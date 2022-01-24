@@ -203,6 +203,7 @@
 </style>
 <div class="container mb-4">
     <h2 class="text-center mt-4 mb-4">Listado de Usuarios</h2>
+    <button class="btn btn-success mb-2" onclick="history.back()">Volver</button>
     <div class="container">
             @livewire('rol-livewire')
     </div>

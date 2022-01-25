@@ -13,6 +13,7 @@ class CorreoLivewire extends Component
     protected $paginationTheme = 'simple-bootstrap';
     // variables globales (se usan en las vistan y en el controlador)
     public $entrada=1,$cuerpo,$usuario,$email,$asunto="",$verasunto,$nombre,$siniestro,$adjunto=[],$let="",$correosbus;
+    public $fecha_inicio,$fecha_fin,$cargando;
     // escuchador para el modal si esta seguro enviar el email
     protected $listeners = ['save'];
     // reglas , requeridos , minimos y email
@@ -45,7 +46,9 @@ class CorreoLivewire extends Component
                 $correos = Http::get(env('PRODUCTION_URL').'/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->id.'&asunto='.$this->let)->body();
                 $correos = collect(json_decode($correos));
             }
+            
             $this->letra();
+            
             return view('livewire.correo-livewire',['correos' =>$correos->paginate(10),'plantillas'=>$plantillas]);
         }
         else {
@@ -56,11 +59,14 @@ class CorreoLivewire extends Component
     public function NuevoCorreo()
     {
        $this->entrada = 1;
+       $this->resetPage();
+       $this->resetExcept('entrada');
     }
     // ver correo, llama la api de show y pasa los datos a la vista
     public function VerCorreo($id)
     {
         $this->entrada = 2;
+        $this->resetPage();
         $ver = Http::get(env('PRODUCTION_URL').'/callcenter/correos/{correo}?token='.Session::get('key')->token.'&id='.$id);
         $ver = json_decode($ver);
         $this->verasunto = $ver;
@@ -69,7 +75,7 @@ class CorreoLivewire extends Component
     public function PlantillaRelleno($asunto_base,$cuerpo_base)
     {
         $this->asunto = $asunto_base;
-        $this->cuerpo = strip_tags($cuerpo_base);
+        $this->cuerpo = $cuerpo_base;
     }
     // al aceotar el modal de guardar se emitira la api post para insertar y se actualizara sin recargar la vista
     public function save()
@@ -122,12 +128,17 @@ class CorreoLivewire extends Component
     // busqueda input correos
     public function letra()
     {
-        $this->correosbus = Http::get(env('PRODUCTION_URL').'/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->id.'&asunto='.$this->let)->body();
+        $this->correosbus = Http::get(env('PRODUCTION_URL').'/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->id.'&asunto='.$this->let.'&fechai='.$this->fecha_inicio.'&fechaf='.$this->fecha_fin)->body();
         $this->correosbus = collect(json_decode($this->correosbus));
+        if ($this->fecha_inicio && $this->fecha_fin) {
+            $this->resetPage();
+        }
     }
-
+    // si se actualiza el input de buscar se reinicia las paginas
     public function updatingLet()
     {
         $this->resetPage();
+        $this->entrada = 1;
+
     }
 }

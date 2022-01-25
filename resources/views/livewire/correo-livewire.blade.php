@@ -1,21 +1,5 @@
 <div class="mail-box">
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
-        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-        <link rel="stylesheet" href="{{asset('js/jquery-ui/jquery-ui.min.css')}}">
-    <!--Internal CSS start-->
-    <style>
-        /* textarea {
-            padding: 3%;
-            border-color: #957dad;
-            border-width: thick;
-        }
-
-        .flex-box {
-            display: flex;
-            justify-content: center;
-        } */
-
-    </style>
+    {{-- barra izquierda bienvenida aoacall y sus datos --}}
     <aside class="sm-side h-100">
         <div class="user-head">
             <h2 class="text-center">AOA EMAIL</h2>
@@ -39,6 +23,10 @@
                 <span type="button" data-toggle="modal" data-target="#exampleModal">
                     Cerrar Sesion
                 </span>
+                <br>
+                <span type="button" data-toggle="modal" data-target="#fecha">
+                    Filtrar
+                </span>
 
             </div>
         </div>
@@ -47,29 +35,34 @@
                 Nuevo Correo
             </a>
             <div class="anyClass">
-                <input type="text" wire:keydown="letra" wire:model="let" class="form-control mb-2" placeholder="Seleccione el asunto que busca">
+                <input type="text" wire:keydown="letra" wire:model="let" @if ($entrada == 2) disabled @endif
+                    class="form-control mb-2" placeholder="Seleccione el asunto que busca">
+                    {{-- <div id="cargando">Cargando</div> --}}
                 <table id="example" class="table table-striped">
                     <tbody>
                         @if ($correosbus)
                             @foreach ($correosbus->paginate(10) as $correo)
                                 <tr class="mouse-hover" wire:click="VerCorreo({{ $correo->id }})">
-                                    <th scope="row">{{$correo->id}}</th>
+                                    <th scope="row">{{ $correo->id }}</th>
                                     <td>{{ Str::limit($correo->asunto, 10) }}</td>
-                                    <td class="font-weight-light">{{ \Carbon\Carbon::parse($correo->fecha_envio)->format('d-m-Y') }}</td>
+                                    <td class="font-weight-light">
+                                        {{ \Carbon\Carbon::parse($correo->fecha_envio)->format('d-m-Y') }}</td>
                                 </tr>
                             @endforeach
                         @endif
                     </tbody>
                 </table>
                 @if (count($correosbus) >= 9)
-                <div class="d-flex justify-content-center">{{$correos->links()}}</div>
+                    <div class="d-flex justify-content-center">{{ $correos->links() }}</div>
                 @endif
-                
+
             </div>
-            
+
         </div>
     </aside>
+    {{-- condicional de donde esta situado, si viendo correo o enviando correos --}}
     @if ($entrada == 1)
+        {{-- formulario y registro de correos --}}
         <div class="container mt-4">
             <form wire:submit.prevent="seguro">
                 <div class="form-row">
@@ -110,7 +103,8 @@
                         <select id="pla" class="custom-select" multiple>
                             @foreach ($plantillas as $index => $plantilla)
                                 <option
-                                    wire:click="PlantillaRelleno('{{ $plantilla->asunto_base }}','{{ $plantilla->cuerpo_base }}')">
+                                    wire:click="PlantillaRelleno('{{ $plantilla->asunto_base }}','{{ $plantilla->cuerpo_base }}')"
+                                    >
                                     {{ $index + 1 }} -
                                     {{ $plantilla->asunto_base }}</option>
                             @endforeach
@@ -152,7 +146,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="form-group" wire:ignore>
+                <div class="form-group" >
                     <label for="inputAddress2">Cuerpo:</label>
                     <section class="">
                         <div class="flex-box">
@@ -191,8 +185,8 @@
                         <br>
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
-                                <div class="flex-box">
-                                    <textarea wire:model="cuerpo" id="textarea1" class="form-control" name="name"
+                                <div class="flex-box" >
+                                    <textarea wire:model="cuerpo" id="editor" class="form-control" name="name"
                                         rows="10" cols="100"
                                         placeholder="Escriba su cuerpo Aca">{!! $cuerpo !!}</textarea>
                                 </div>
@@ -205,47 +199,148 @@
                 <button type="submit" class="btn aoa-btn text-white">Enviar Correo</button>
             </form>
         </div>
-
     @else
-        <div class="container mt-4">
-            <div class="row inbox-wrapper">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                @foreach ($verasunto as $variable => $item)
-                                    <div class="container">
-                                        <div class="email-body">
-                                            <p> Enviado por : {{ Session::get('key')->usuario }}</p>
-                                            <p>Email : {{ $item->email }}</p>
-                                            <p>CC email : {{ $item->cc_email }}</p>
-                                            @php
-                                                $template = str_ireplace(':usuario', $item->usuario, $item->cuerpo_mensaje);
-                                                echo $template;
-                                            @endphp
+        {{-- plantilla correo enviado --}}
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <meta name="x-apple-disable-message-reformatting">
+            <style>
+                table,
+                td,
+                div,
+                h1,
+                p {
+                    font-family: Arial, sans-serif;
+                }
 
-                                            <br />
-                                            <p><strong>Enviado</strong><br />{{ $item->fecha_envio }}</p>
+                @media screen and (max-width: 530px) {
+                    .unsub {
+                        display: block;
+                        padding: 8px;
+                        margin-top: 14px;
+                        border-radius: 6px;
+                        background-color: #103156;
+                        text-decoration: none !important;
+                        font-weight: bold;
+                    }
+
+                    .col-lge {
+                        max-width: 100% !important;
+                    }
+                }
+
+                @media screen and (min-width: 531px) {
+                    .col-sml {
+                        max-width: 27% !important;
+                    }
+
+                    .col-lge {
+                        max-width: 73% !important;
+                    }
+                }
+
+                #shadow {
+                    box-shadow: 0px 10px 10px black;
+                }
+
+            </style>
+        </head>
+
+        <div role="article" aria-roledescription="email" lang="en"
+            style="text-size-adjust:100%;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;background-color:#">
+            <table role="presentation" style="width:100%;border:none;border-spacing:0; ">
+                <tr>
+                    <td align="center" style="padding:0;">
+                        @foreach ($verasunto as $variable => $item)
+                            <table role="presentation"
+                                style="width:94%;max-width:600px;border:none;border-spacing:0;text-align:left;font-family:Arial,sans-serif;font-size:16px;line-height:22px;color:#363636;"
+                                id="shadow">
+                                <tr>
+                                    <td
+                                        style="padding:40px 30px 30px 30px;text-align:center;font-size:24px;font-weight:bold;">
+                                        <a href="http://www.example.com/" style="text-decoration:none;"><img
+                                                src="https://www.aoacolombia.com/wp-content/uploads/2019/09/cropped-logotipo-aoa-colombia-1.png"
+                                                width="165" alt="Logo"
+                                                style="width:405px;max-width:80%;height:auto;border:none;text-decoration:none;color:#ffffff;"></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:30px;background-color:#ffffff;">
+                                        <h1
+                                            style="margin-top:0;margin-bottom:16px;font-size:26px;line-height:32px;font-weight:bold;letter-spacing:-0.02em;text-align:center">
+                                            CORREO AOA</h1>
+                                        <p>Para: {{ $item->email }}</p>
+                                        @php
+                                            $data = [
+                                                'email' => $item->email,
+                                            ];
+                                            foreach ($data as $variable => $value) {
+                                                $item->cuerpo_mensaje = str_ireplace(":$variable",$value,$item->cuerpo_mensaje);
+                                            }
+                                        @endphp
+                                        {!! $item->cuerpo_mensaje !!}
+                                        <p>AOA en alianza con las aseguradoras pone a disposición del asegurado un
+                                            vehículo
+                                            de reemplazo por un período
+                                            determinado de tiempo.Puede disponer de su vehículo en caso de cualquier
+                                            siniestro una vez sea aprobado por la compañía aseguradora.</p>
+                                        <p>La tranquilidad de movilizarse de forma fácil y segura, una ventaja que
+                                            ofrecen
+                                            los vehículos en alquiler de AOA.
+                                            Solicite las múltiples soluciones de Renta de Vehículo en tamaño, capacidad
+                                            y
+                                            uso, desde un día hasta un año de servicio.</h6>
+                                        <p style="margin:10;"><a href="https://example.com/"
+                                                style="background: #103156; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;">
+                                                <!--[if mso]><i style="letter-spacing: 25px;mso-font-width:-100%;mso-text-raise:20pt">&nbsp;</i><![endif]--><span
+                                                    style="mso-text-raise:10pt;font-weight:bold; ">DESCARGAR PDF</span>
+                                                <!--[if mso]><i style="letter-spacing: 25px;mso-font-width:-100%">&nbsp;</i><![endif]-->
+                                            </a></p>
+                                        {{-- <p style="margin:10;"><a href="https://example.com/"
+                                            style="background: #103156; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;">
+                                            <!--[if mso]><i style="letter-spacing: 25px;mso-font-width:-100%;mso-text-raise:20pt">&nbsp;</i><![endif]--><span
+                                                style="mso-text-raise:10pt;font-weight:bold; "> DESCARGAR PDF</span>
+                                            <!--[if mso]><i style="letter-spacing: 25px;mso-font-width:-100%">&nbsp;</i><![endif]-->
+                                        </a></p> --}}
+                                        <a href="http://www.example.com/" style="text-decoration:none;"><img
+                                                src="https://app.aoacolombia.com/imgemail/Logos.png" width="600" alt=""
+                                                style="width:100%;height:100px;display:block;border:none;text-decoration:none;color:#363636;"></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding:30px;text-align:center;font-size:12px;background-color:#103156;color:#cccccc;">
+                                        <p style="margin:0 0 8px 0;"><a
+                                                href="https://www.facebook.com/Administraci%C3%B3n-Operativa-Automotriz-SAS-100961215687318"
+                                                style="text-decoration:none;"><img
+                                                    src="https://app.aoacolombia.com/imgemail/md_5b01251200ff5-removebg-preview(1).png"
+                                                    width="40" height="40" alt="f"
+                                                    style="display:inline-block;color:#cccccc;"></a> <a
+                                                href="https://www.linkedin.com/company/aoa-colombia"
+                                                style="text-decoration:none;"><img
+                                                    src="https://app.aoacolombia.com/imgemail/linkedin-blanco.png"
+                                                    width="40" height="40" alt="t"
+                                                    style="display:inline-block;color:#cccccc;"></a></p>
+                                        <div id="mover2" style="inline-box-align: 0;">
+                                            <h6 id="parrafo1"><strong>Carrera 69B 98A-10 Morato, Bogota D.C</strong>
+                                            </h6>
+                                            <h6 id="parrafo2"><strong>PBX: (057) 1 7560512 Fax (057) 7560512</strong>
+                                            </h6>
+                                            <h6 id="parrafo3"><strong>www.aoacolombia.com</strong></h6>
+                                            <h6 id="parrafo4"><strong>NIT: 900.174.552-5</strong></h6>
                                         </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                            <address style="font-size:8px">
-                                <img class="w-100" alt=""
-                                    src="https://www.aoacolombia.com/wp-content/uploads/2019/09/cropped-logotipo-aoa-colombia-1.png"
-                                    width="250px"><br>
-                                <p> ADMINISTRACIÓN OPERATIVA AUTOMOTRIZ </p>
-                                <p>NIT.: 900.174.552-5</p>
-                                <p>Carrera 69B 98A-10 Bogotá D.C.</p>
-                                <p>Pbx: (057) 1 7560510 Fax (057) 1 7560512 </p>
-                                <p>www.aoacolombia.com</p>
-                            </address>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        @endforeach
+                    </td>
+                </tr>
+            </table>
         </div>
     @endif
+        {{-- modal cerrar session --}}
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -261,6 +356,29 @@
             </div>
         </div>
     </div>
+        {{-- modal filtro por fecha --}}
+    <div class="modal fade" id="fecha" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <h2>Filtrar por fecha</h2>
+                </div>
+                <div class="form-row p-4">
+                    <div class="form-group col-md-6">
+                        <label for="inputAddress">DESDE:</label>
+                        <input id="fecha_ini" type="date" class="form-control" />     
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputAddress2">HASTA:</label>
+                        <input id="fecha_fin" type="date" class="form-control" />
+                    </div>
+                    <button id="filtrar" data-dismiss="modal" class="btn aoa-btn text-white">FILTRAR</button>
+                </div>
+            </div>
+        </div>
+    </div>  
+    {{-- javascript añadidos --}}
     @push('js')
         <script>
             function f1() {
@@ -343,24 +461,36 @@
                 })
             })
         </script>
-        {{-- <script
-        src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-        crossorigin="anonymous"></script>
-        <script src="{{asset('js/jquery-ui/jquery-ui.min.js')}}"></script>
         <script>
-            var cursos = ['text','array','html','css'];
-            $('#search').autocomplete({
-                source: function(request,response) {
-                    $.ajax({
-                        url: "http://127.0.0.1:8000/api/callcenter/correos?token=MfNdmxEdsjeeZA43Mn49ObZXBWN1DMFhI8NdUGL2&id_user=2&asunto="+request.asunto,
-                        dataType: 'json',
-                        success: function(data){
-                            response(data)
-                        }
-                    });
-                }
-            });
+             document.addEventListener('livewire:load', function () {
+             $( "#filtrar" ).click(function() {
+                    let fecha_ini = $('#fecha_ini').val();
+                    let fecha_fin = $('#fecha_fin').val();
+                    @this.fecha_inicio = fecha_ini;
+                    @this.fecha_fin = fecha_fin;
+                    console.log(fecha_ini);
+                    // $('#cargando').show;
+                });
+            })
+        </script>
+        {{-- <script>
+            document.addEventListener('livewire:load', function () {
+               
+            
+            ClassicEditor
+                .create( document.getElementById('editor') )
+                .then(editor => {
+                    $( "#pla" ).click(function() {
+                    let asunto = @js($asunto);
+                    console.log(asunto);
+                    editor.setData(asunto);
+                });
+                    
+                })
+                .catch( error => {
+                    console.error( error );
+                } );
+            })
         </script> --}}
     @endpush
 </div>

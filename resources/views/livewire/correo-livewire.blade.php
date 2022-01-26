@@ -1,4 +1,9 @@
 <div class="mail-box">
+    <style>
+        .ck-editor__editable {
+    min-height: 250px !important;
+}
+    </style>
     {{-- barra izquierda bienvenida aoacall y sus datos --}}
     <aside class="sm-side h-100">
         <div class="user-head">
@@ -31,7 +36,7 @@
             </div>
         </div>
         <div class="inbox-body">
-            <a title="Compose" class="btn w-100 aoa-btn text-white" wire:click="NuevoCorreo">
+            <a @if ($entrada ==2) href="/" @endif title="Compose" class="btn w-100 aoa-btn text-white" wire:click="NuevoCorreo">
                 Nuevo Correo
             </a>
             <div class="anyClass">
@@ -106,7 +111,7 @@
                                     wire:click="PlantillaRelleno('{{ $plantilla->asunto_base }}','{{ $plantilla->cuerpo_base }}')"
                                     >
                                     {{ $index + 1 }} -
-                                    {{ $plantilla->asunto_base }}</option>
+                                    {{ $plantilla->asunto_base }} - <span style="visibility: hidden">{{ $plantilla->cuerpo_base }}</span> </option>
                             @endforeach
                         </select>
                     </div>
@@ -185,10 +190,10 @@
                         <br>
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
-                                <div class="flex-box" >
+                                <div class="flex-box" wire:ignore>
                                     <textarea wire:model="cuerpo" id="editor" class="form-control" name="name"
                                         rows="10" cols="100"
-                                        placeholder="Escriba su cuerpo Aca">{!! $cuerpo !!}</textarea>
+                                        placeholder="Escriba su cuerpo Aca"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -484,24 +489,28 @@
                 });
             })
         </script>
-        {{-- <script>
+        <script>
             document.addEventListener('livewire:load', function () {
                
             
             ClassicEditor
                 .create( document.getElementById('editor') )
                 .then(editor => {
-                    $( "#pla" ).click(function() {
-                    let asunto = @js($asunto);
-                    console.log(asunto);
-                    editor.setData(asunto);
-                });
+                    editor.model.document.on('change:data',() =>{
+                        @this.set('cuerpo',editor.getData());
+                    });
+                        $( "#pla" ).click(function() {
+                        let asunto = $('#pla').val();
+                        console.log(asunto[0]);
+                        editor.setData(asunto[0]);
+                    });
+                    
                     
                 })
                 .catch( error => {
                     console.error( error );
                 } );
             })
-        </script> --}}
+        </script>
     @endpush
 </div>

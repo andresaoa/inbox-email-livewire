@@ -41,8 +41,12 @@
                 Nuevo Correo
             </a>
             <div class="anyClass">
+                
                 <input type="text" wire:keydown="letra" wire:model="let" @if ($entrada == 2) disabled @endif
                     class="form-control mb-2" placeholder="Seleccione el asunto que busca">
+                    <div wire:loading class="">
+                        <div class="list-item">Cargando...</div>
+                    </div>
                 {{-- <div id="cargando">Cargando</div> --}}
                 <table id="example" class="table table-striped">
                     <tbody>
@@ -501,7 +505,9 @@
         <script>
             document.addEventListener('livewire:load', function() {
                 ClassicEditor
-                    .create(document.getElementById('editor'))
+                    .create(document.getElementById('editor'),{
+                        removePlugins: ['CKFinderUploadAdapter', 'CKFinder', 'EasyImage', 'Image', 'ImageCaption', 'ImageStyle', 'ImageToolbar', 'ImageUpload', 'MediaEmbed'],
+                    })
                     .then(editor => {
                         editor.model.document.on('change:data', () => {
                             @this.set('cuerpo', editor.getData());

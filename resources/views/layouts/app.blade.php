@@ -31,6 +31,9 @@
     @yield('content')
 
     @livewireScripts
+    <script>
+        Livewire.onPageExpired((response, message) => {})
+    </script>
     <script src="https://cdn.ckeditor.com/ckeditor5/27.1.0/classic/ckeditor.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"

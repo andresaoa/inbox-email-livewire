@@ -29,7 +29,8 @@ class CorreoLivewire extends Component
         'asunto.required' => 'El Asunto no puede estar vacio.',
         'email.email' => 'El Correo debe ser valido.',
         'cuerpo.required' => 'El Cuerpo no puede estar vacio.',
-        'usuario.required' => 'El Usuario no puede estar vacio.'
+        'usuario.required' => 'El Siniestro no puede estar vacio.',
+        'asunto.min' => 'El valor minimo es 6'
     ];
     
     // render
@@ -139,6 +140,5 @@ class CorreoLivewire extends Component
     {
         $this->resetPage();
         $this->entrada = 1;
-
     }
 }

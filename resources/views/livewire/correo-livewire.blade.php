@@ -1,8 +1,9 @@
 <div class="mail-box">
     <style>
         .ck-editor__editable {
-    min-height: 250px !important;
-}
+            min-height: 270px !important;
+        }
+
     </style>
     {{-- barra izquierda bienvenida aoacall y sus datos --}}
     <aside class="sm-side h-100">
@@ -36,13 +37,13 @@
             </div>
         </div>
         <div class="inbox-body">
-            <a @if ($entrada ==2) href="/" @endif title="Compose" class="btn w-100 aoa-btn text-white" wire:click="NuevoCorreo">
+            <a @if ($entrada == 2) href="/" @endif title="Compose" class="btn w-100 aoa-btn text-white" wire:click="NuevoCorreo">
                 Nuevo Correo
             </a>
             <div class="anyClass">
                 <input type="text" wire:keydown="letra" wire:model="let" @if ($entrada == 2) disabled @endif
                     class="form-control mb-2" placeholder="Seleccione el asunto que busca">
-                    {{-- <div id="cargando">Cargando</div> --}}
+                {{-- <div id="cargando">Cargando</div> --}}
                 <table id="example" class="table table-striped">
                     <tbody>
                         @if ($correosbus)
@@ -58,7 +59,7 @@
                     </tbody>
                 </table>
                 @if (count($correosbus) >= 9 and $entrada == 1)
-                    <div class="d-flex justify-content-center">{{ $correos->links() }}</div>
+                    <div class="d-flex justify-content-center mb-4">{{ $correos->links() }}</div>
                 @endif
 
             </div>
@@ -108,10 +109,10 @@
                         <select id="pla" class="custom-select" multiple>
                             @foreach ($plantillas as $index => $plantilla)
                                 <option
-                                    wire:click="PlantillaRelleno('{{ $plantilla->asunto_base }}','{{ $plantilla->cuerpo_base }}')"
-                                    >
+                                    wire:click="PlantillaRelleno('{{ $plantilla->asunto_base }}','{{ $plantilla->cuerpo_base }}')">
                                     {{ $index + 1 }} -
-                                    {{ $plantilla->asunto_base }} - <span style="visibility: hidden">{{ $plantilla->cuerpo_base }}</span> </option>
+                                    {{ $plantilla->asunto_base }} - <b
+                                        >{{ $plantilla->cuerpo_base }}</b> </option>
                             @endforeach
                         </select>
                     </div>
@@ -151,10 +152,10 @@
                         </p>
                     </div>
                 </div>
-                <div class="form-group" >
+                <div class="form-group">
                     <label for="inputAddress2">Cuerpo:</label>
                     <section class="">
-                        <div class="flex-box">
+                        {{-- <div class="flex-box">
                             <div class="row">
                                 <div class="col">
                                     <button type="button" onclick="f1()" class=" shadow-sm btn btn-outline-secondary"
@@ -186,14 +187,12 @@
                                         Clear Text</button>
                                 </div>
                             </div>
-                        </div>
-                        <br>
+                        </div> --}}
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
                                 <div class="flex-box" wire:ignore>
                                     <textarea wire:model="cuerpo" id="editor" class="form-control" name="name"
-                                        rows="10" cols="100"
-                                        placeholder="Escriba su cuerpo Aca"></textarea>
+                                        rows="10" cols="100" placeholder="Escriba su cuerpo Aca"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -206,6 +205,7 @@
         </div>
     @else
         {{-- plantilla correo enviado --}}
+
         <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -249,114 +249,120 @@
             <table role="presentation" style="width:100%;border:none;border-spacing:0; ">
                 <tr>
                     <td align="center" style="padding:0;">
-                        
-                            <table role="presentation"
-                                style="margin-top:20px;width:94%;max-width:600px;border-top:10px solid rgb(168,173,0);border-spacing:0;text-align:left;font-family:Arial,sans-serif;font-size:16px;line-height:22px;color:#363636;"
-                                id="shadow">
-                                <tr>
-                                    <td
-                                        style="padding:40px 30px 30px 30px;text-align:center;font-size:24px;font-weight:bold;">
-                                        <a href="http://www.example.com/" style="text-decoration:none;"><img
-                                                src="https://www.aoacolombia.com/wp-content/uploads/2019/09/cropped-logotipo-aoa-colombia-1.png"
-                                                width="165" alt="Logo"
-                                                style="width:405px;max-width:80%;height:auto;border:none;text-decoration:none;color:#ffffff;"></a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding:30px;background-color:#ffffff;">
-                                        <h1
-                                            style="margin-top:0;margin-bottom:16px;font-size:26px;line-height:32px;font-weight:bold;letter-spacing:-0.02em;text-align:center">
-                                            CORREO AOA</h1>
-                                            {{-- {{dd($verasunto[0])}} --}}
-                                        <p>Para: {{ $verasunto[0]->email }}</p>
-                                        @php
-                                            $data = [
-                                                'email' =>$verasunto[0]->email,
-                                                'usuario' =>$verasunto[0]->to,
-                                                'siniestro' =>$verasunto[0]->siniestro
-                                            ];
-                                            foreach ($data as $variable => $value) {
-                                                $verasunto[0]->cuerpo_mensaje = str_ireplace(":$variable",$value,$verasunto[0]->cuerpo_mensaje);
-                                            }
-                                        @endphp
-                                        {!!$verasunto[0]->cuerpo_mensaje !!}
-                                        <p>AOA en alianza con las aseguradoras pone a disposición del asegurado un
-                                            vehículo
-                                            de reemplazo por un período
-                                            determinado de tiempo.Puede disponer de su vehículo en caso de cualquier
-                                            siniestro una vez sea aprobado por la compañía aseguradora.</p>
-                                        <p>La tranquilidad de movilizarse de forma fácil y segura, una ventaja que
-                                            ofrecen
-                                            los vehículos en alquiler de AOA.
-                                            Solicite las múltiples soluciones de Renta de Vehículo en tamaño, capacidad
-                                            y
-                                            uso, desde un día hasta un año de servicio.</h6>
-                                            @if ($verasunto[0]->adjunto != null)
-                                                @php
-                                                    $explode = explode(',', $verasunto[0]->adjunto);
-                                                    $if = count($explode);
-                                                @endphp
-                                                @if ($if >= 1)
-                                                <p style="margin:10;"><a href="{{ config('url') . asset($explode[0]) }}" download="newfilename"
-                                                    style="background: #103156; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;">
-                                                    <span
-                                                        style="mso-text-raise:10pt;font-weight:bold; ">DESCARGAR PDF 1</span>
-                                                </a></p>
-                                                @endif
-                                                @if ($if >= 2)
-                                                <p style="margin:10;"><a href="{{ config('url') . asset($explode[0]) }}" download="newfilename"
-                                                    style="background: #103156; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;">
-                                                    <span
-                                                        style="mso-text-raise:10pt;font-weight:bold; ">DESCARGAR PDF 2</span>
-                                                </a></p>
-                                                @endif
-                                                @if ($if >= 3)
-                                                <p style="margin:10;"><a href="{{ config('url') . asset($explode[0]) }}" download="newfilename"
-                                                    style="background: #103156; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;">
-                                                    <span
-                                                        style="mso-text-raise:10pt;font-weight:bold; ">DESCARGAR PDF 3</span>
-                                                </a></p>
-                                                @endif
+
+                        <table role="presentation"
+                            style="margin-top:20px;width:94%;max-width:600px;border-top:10px solid rgb(168,173,0);border-spacing:0;text-align:left;font-family:Arial,sans-serif;font-size:16px;line-height:22px;color:#363636;"
+                            id="shadow">
+                            <tr>
+                                <td
+                                    style="padding:40px 30px 30px 30px;text-align:center;font-size:24px;font-weight:bold;">
+                                    <a href="http://www.example.com/" style="text-decoration:none;"><img
+                                            src="https://www.aoacolombia.com/wp-content/uploads/2019/09/cropped-logotipo-aoa-colombia-1.png"
+                                            width="165" alt="Logo"
+                                            style="width:405px;max-width:80%;height:auto;border:none;text-decoration:none;color:#ffffff;"></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:30px;background-color:#ffffff;">
+                                    <h1
+                                        style="margin-top:0;margin-bottom:16px;font-size:26px;line-height:32px;font-weight:bold;letter-spacing:-0.02em;text-align:center">
+                                        CORREO AOA</h1>
+                                    {{-- {{dd($verasunto[0])}} --}}
+                                    <p>Para: {{ $verasunto[0]->email }}</p>
+                                    @php
+                                        $data = [
+                                            'email' => $verasunto[0]->email,
+                                            'usuario' => $verasunto[0]->to,
+                                            'siniestro' => $verasunto[0]->siniestro,
+                                        ];
+                                        foreach ($data as $variable => $value) {
+                                            $verasunto[0]->cuerpo_mensaje = str_ireplace(":$variable", $value, $verasunto[0]->cuerpo_mensaje);
+                                        }
+                                    @endphp
+                                    {!! $verasunto[0]->cuerpo_mensaje !!}
+                                    <p>AOA en alianza con las aseguradoras pone a disposición del asegurado un
+                                        vehículo
+                                        de reemplazo por un período
+                                        determinado de tiempo.Puede disponer de su vehículo en caso de cualquier
+                                        siniestro una vez sea aprobado por la compañía aseguradora.</p>
+                                    <p>La tranquilidad de movilizarse de forma fácil y segura, una ventaja que
+                                        ofrecen
+                                        los vehículos en alquiler de AOA.
+                                        Solicite las múltiples soluciones de Renta de Vehículo en tamaño, capacidad
+                                        y
+                                        uso, desde un día hasta un año de servicio.</h6>
+                                        @if ($verasunto[0]->adjunto != null)
+                                            @php
+                                                $explode = explode(',', $verasunto[0]->adjunto);
+                                                $if = count($explode);
+                                            @endphp
+                                            @if ($if >= 1)
+                                                <p style="margin:10;"><a
+                                                        href="{{ config('url') . asset($explode[0]) }}"
+                                                        download="newfilename"
+                                                        style="background: #103156; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;">
+                                                        <span style="mso-text-raise:10pt;font-weight:bold; ">DESCARGAR
+                                                            PDF 1</span>
+                                                    </a></p>
                                             @endif
-                                        <a  style="text-decoration:none;"><img
+                                            @if ($if >= 2)
+                                                <p style="margin:10;"><a
+                                                        href="{{ config('url') . asset($explode[0]) }}"
+                                                        download="newfilename"
+                                                        style="background: #103156; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;">
+                                                        <span style="mso-text-raise:10pt;font-weight:bold; ">DESCARGAR
+                                                            PDF 2</span>
+                                                    </a></p>
+                                            @endif
+                                            @if ($if >= 3)
+                                                <p style="margin:10;"><a
+                                                        href="{{ config('url') . asset($explode[0]) }}"
+                                                        download="newfilename"
+                                                        style="background: #103156; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;">
+                                                        <span style="mso-text-raise:10pt;font-weight:bold; ">DESCARGAR
+                                                            PDF 3</span>
+                                                    </a></p>
+                                            @endif
+                                        @endif
+                                        <a style="text-decoration:none;"><img
                                                 src="https://app.aoacolombia.com/imgemail/Logos.png" width="600" alt=""
                                                 style="width:100%;height:100px;display:block;border:none;text-decoration:none;color:#363636;"></a>
-                                        
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td
-                                        style="padding:30px;text-align:center;font-size:12px;background-color:#103156;color:#cccccc;">
-                                        <p style="margin:0 0 8px 0;"><a
-                                                href="https://www.facebook.com/Administraci%C3%B3n-Operativa-Automotriz-SAS-100961215687318"
-                                                style="text-decoration:none;"><img
-                                                    src="https://app.aoacolombia.com/imgemail/md_5b01251200ff5-removebg-preview(1).png"
-                                                    width="40" height="40" alt="f"
-                                                    style="display:inline-block;color:#cccccc;"></a> <a
-                                                href="https://www.linkedin.com/company/aoa-colombia"
-                                                style="text-decoration:none;"><img
-                                                    src="https://app.aoacolombia.com/imgemail/linkedin-blanco.png"
-                                                    width="40" height="40" alt="t"
-                                                    style="display:inline-block;color:#cccccc;"></a></p>
-                                        <div id="mover2" style="inline-box-align: 0;">
-                                            <h6 id="parrafo1"><strong>Carrera 69B 98A-10 Morato, Bogota D.C</strong>
-                                            </h6>
-                                            <h6 id="parrafo2"><strong>PBX: (057) 1 7560512 Fax (057) 7560512</strong>
-                                            </h6>
-                                            <h6 id="parrafo3"><strong>www.aoacolombia.com</strong></h6>
-                                            <h6 id="parrafo4"><strong>NIT: 900.174.552-5</strong></h6>
-                                        </div>
-                                    </td>
-                                </tr>
 
-                            </table>
-                        
+                                </td>
+                            </tr>
+                            <tr>
+                                <td
+                                    style="padding:30px;text-align:center;font-size:12px;background-color:#103156;color:#cccccc;">
+                                    <p style="margin:0 0 8px 0;"><a
+                                            href="https://www.facebook.com/Administraci%C3%B3n-Operativa-Automotriz-SAS-100961215687318"
+                                            style="text-decoration:none;"><img
+                                                src="https://app.aoacolombia.com/imgemail/md_5b01251200ff5-removebg-preview(1).png"
+                                                width="40" height="40" alt="f"
+                                                style="display:inline-block;color:#cccccc;"></a> <a
+                                            href="https://www.linkedin.com/company/aoa-colombia"
+                                            style="text-decoration:none;"><img
+                                                src="https://app.aoacolombia.com/imgemail/linkedin-blanco.png"
+                                                width="40" height="40" alt="t"
+                                                style="display:inline-block;color:#cccccc;"></a></p>
+                                    <div id="mover2" style="inline-box-align: 0;">
+                                        <h6 id="parrafo1"><strong>Carrera 69B 98A-10 Morato, Bogota D.C</strong>
+                                        </h6>
+                                        <h6 id="parrafo2"><strong>PBX: (057) 1 7560512 Fax (057) 7560512</strong>
+                                        </h6>
+                                        <h6 id="parrafo3"><strong>www.aoacolombia.com</strong></h6>
+                                        <h6 id="parrafo4"><strong>NIT: 900.174.552-5</strong></h6>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </table>
+
                     </td>
                 </tr>
             </table>
         </div>
     @endif
-        {{-- modal cerrar session --}}
+    {{-- modal cerrar session --}}
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -372,7 +378,7 @@
             </div>
         </div>
     </div>
-        {{-- modal filtro por fecha --}}
+    {{-- modal filtro por fecha --}}
     <div class="modal fade" id="fecha" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -383,7 +389,7 @@
                 <div class="form-row p-4">
                     <div class="form-group col-md-6">
                         <label for="inputAddress">DESDE:</label>
-                        <input id="fecha_ini" type="date" class="form-control" />     
+                        <input id="fecha_ini" type="date" class="form-control" />
                     </div>
                     <div class="form-group col-md-6">
                         <label for="inputAddress2">HASTA:</label>
@@ -393,7 +399,7 @@
                 </div>
             </div>
         </div>
-    </div>  
+    </div>
     {{-- javascript añadidos --}}
     @push('js')
         <script>
@@ -465,6 +471,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         Livewire.emitTo('correo-livewire', 'save');
+                        
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',
@@ -473,13 +480,15 @@
                             timer: 2500,
                             allowOutsideClick: false
                         })
+                        $('form :input').val('');
+                        $('.ck-editor__editable').html( '' );
                     }
                 })
             })
         </script>
         <script>
-             document.addEventListener('livewire:load', function () {
-             $( "#filtrar" ).click(function() {
+            document.addEventListener('livewire:load', function() {
+                $("#filtrar").click(function() {
                     let fecha_ini = $('#fecha_ini').val();
                     let fecha_fin = $('#fecha_fin').val();
                     @this.fecha_inicio = fecha_ini;
@@ -490,26 +499,24 @@
             })
         </script>
         <script>
-            document.addEventListener('livewire:load', function () {
-               
-            
-            ClassicEditor
-                .create( document.getElementById('editor') )
-                .then(editor => {
-                    editor.model.document.on('change:data',() =>{
-                        @this.set('cuerpo',editor.getData());
+            document.addEventListener('livewire:load', function() {
+                ClassicEditor
+                    .create(document.getElementById('editor'))
+                    .then(editor => {
+                        editor.model.document.on('change:data', () => {
+                            @this.set('cuerpo', editor.getData());
+                        });
+                        $("#pla").click(function() {
+                            let asunto = $('#pla').val();
+                            // console.log(asunto[0]);
+                            editor.setData(asunto[0]);
+                        });
+
+
+                    })
+                    .catch(error => {
+                        console.error(error);
                     });
-                        $( "#pla" ).click(function() {
-                        let asunto = $('#pla').val();
-                        console.log(asunto[0]);
-                        editor.setData(asunto[0]);
-                    });
-                    
-                    
-                })
-                .catch( error => {
-                    console.error( error );
-                } );
             })
         </script>
     @endpush

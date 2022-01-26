@@ -52,7 +52,7 @@
                         @endif
                     </tbody>
                 </table>
-                @if (count($correosbus) >= 9)
+                @if (count($correosbus) >= 9 and $entrada == 1)
                     <div class="d-flex justify-content-center">{{ $correos->links() }}</div>
                 @endif
 
@@ -206,14 +206,6 @@
             <meta name="viewport" content="width=device-width,initial-scale=1">
             <meta name="x-apple-disable-message-reformatting">
             <style>
-                table,
-                td,
-                div,
-                h1,
-                p {
-                    font-family: Arial, sans-serif;
-                }
-
                 @media screen and (max-width: 530px) {
                     .unsub {
                         display: block;
@@ -252,9 +244,9 @@
             <table role="presentation" style="width:100%;border:none;border-spacing:0; ">
                 <tr>
                     <td align="center" style="padding:0;">
-                        @foreach ($verasunto as $variable => $item)
+                        
                             <table role="presentation"
-                                style="width:94%;max-width:600px;border:none;border-spacing:0;text-align:left;font-family:Arial,sans-serif;font-size:16px;line-height:22px;color:#363636;"
+                                style="margin-top:20px;width:94%;max-width:600px;border-top:10px solid rgb(168,173,0);border-spacing:0;text-align:left;font-family:Arial,sans-serif;font-size:16px;line-height:22px;color:#363636;"
                                 id="shadow">
                                 <tr>
                                     <td
@@ -270,16 +262,19 @@
                                         <h1
                                             style="margin-top:0;margin-bottom:16px;font-size:26px;line-height:32px;font-weight:bold;letter-spacing:-0.02em;text-align:center">
                                             CORREO AOA</h1>
-                                        <p>Para: {{ $item->email }}</p>
+                                            {{-- {{dd($verasunto[0])}} --}}
+                                        <p>Para: {{ $verasunto[0]->email }}</p>
                                         @php
                                             $data = [
-                                                'email' => $item->email,
+                                                'email' =>$verasunto[0]->email,
+                                                'usuario' =>$verasunto[0]->to,
+                                                'siniestro' =>$verasunto[0]->siniestro
                                             ];
                                             foreach ($data as $variable => $value) {
-                                                $item->cuerpo_mensaje = str_ireplace(":$variable",$value,$item->cuerpo_mensaje);
+                                                $verasunto[0]->cuerpo_mensaje = str_ireplace(":$variable",$value,$verasunto[0]->cuerpo_mensaje);
                                             }
                                         @endphp
-                                        {!! $item->cuerpo_mensaje !!}
+                                        {!!$verasunto[0]->cuerpo_mensaje !!}
                                         <p>AOA en alianza con las aseguradoras pone a disposición del asegurado un
                                             vehículo
                                             de reemplazo por un período
@@ -291,19 +286,34 @@
                                             Solicite las múltiples soluciones de Renta de Vehículo en tamaño, capacidad
                                             y
                                             uso, desde un día hasta un año de servicio.</h6>
-                                        <p style="margin:10;"><a href="https://example.com/"
-                                                style="background: #103156; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;">
-                                                <!--[if mso]><i style="letter-spacing: 25px;mso-font-width:-100%;mso-text-raise:20pt">&nbsp;</i><![endif]--><span
-                                                    style="mso-text-raise:10pt;font-weight:bold; ">DESCARGAR PDF</span>
-                                                <!--[if mso]><i style="letter-spacing: 25px;mso-font-width:-100%">&nbsp;</i><![endif]-->
-                                            </a></p>
-                                        {{-- <p style="margin:10;"><a href="https://example.com/"
-                                            style="background: #103156; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;">
-                                            <!--[if mso]><i style="letter-spacing: 25px;mso-font-width:-100%;mso-text-raise:20pt">&nbsp;</i><![endif]--><span
-                                                style="mso-text-raise:10pt;font-weight:bold; "> DESCARGAR PDF</span>
-                                            <!--[if mso]><i style="letter-spacing: 25px;mso-font-width:-100%">&nbsp;</i><![endif]-->
-                                        </a></p> --}}
-                                        <a href="http://www.example.com/" style="text-decoration:none;"><img
+                                            @if ($verasunto[0]->adjunto != null)
+                                                @php
+                                                    $explode = explode(',', $verasunto[0]->adjunto);
+                                                    $if = count($explode);
+                                                @endphp
+                                                @if ($if >= 1)
+                                                <p style="margin:10;"><a href="{{ config('url') . asset($explode[0]) }}" download="newfilename"
+                                                    style="background: #103156; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;">
+                                                    <span
+                                                        style="mso-text-raise:10pt;font-weight:bold; ">DESCARGAR PDF 1</span>
+                                                </a></p>
+                                                @endif
+                                                @if ($if >= 2)
+                                                <p style="margin:10;"><a href="{{ config('url') . asset($explode[0]) }}" download="newfilename"
+                                                    style="background: #103156; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;">
+                                                    <span
+                                                        style="mso-text-raise:10pt;font-weight:bold; ">DESCARGAR PDF 2</span>
+                                                </a></p>
+                                                @endif
+                                                @if ($if >= 3)
+                                                <p style="margin:10;"><a href="{{ config('url') . asset($explode[0]) }}" download="newfilename"
+                                                    style="background: #103156; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;">
+                                                    <span
+                                                        style="mso-text-raise:10pt;font-weight:bold; ">DESCARGAR PDF 3</span>
+                                                </a></p>
+                                                @endif
+                                            @endif
+                                        <a  style="text-decoration:none;"><img
                                                 src="https://app.aoacolombia.com/imgemail/Logos.png" width="600" alt=""
                                                 style="width:100%;height:100px;display:block;border:none;text-decoration:none;color:#363636;"></a>
                                     </td>
@@ -334,7 +344,7 @@
                                 </tr>
 
                             </table>
-                        @endforeach
+                        
                     </td>
                 </tr>
             </table>

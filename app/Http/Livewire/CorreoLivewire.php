@@ -130,9 +130,9 @@ class CorreoLivewire extends Component
     {
         $this->correosbus = Http::get(env('PRODUCTION_URL').'/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->id.'&asunto='.$this->let.'&fechai='.$this->fecha_inicio.'&fechaf='.$this->fecha_fin)->body();
         $this->correosbus = collect(json_decode($this->correosbus));
-        if ($this->fecha_inicio && $this->fecha_fin) {
-            $this->resetPage();
-        }
+        // if ($this->fecha_inicio && $this->fecha_fin) {
+        //     $this->resetPage();
+        // }
     }
     // si se actualiza el input de buscar se reinicia las paginas
     public function updatingLet()

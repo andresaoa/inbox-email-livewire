@@ -316,6 +316,7 @@
                                         <a  style="text-decoration:none;"><img
                                                 src="https://app.aoacolombia.com/imgemail/Logos.png" width="600" alt=""
                                                 style="width:100%;height:100px;display:block;border:none;text-decoration:none;color:#363636;"></a>
+                                        
                                     </td>
                                 </tr>
                                 <tr>

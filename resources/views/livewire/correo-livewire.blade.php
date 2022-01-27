@@ -62,7 +62,7 @@
                         @endif
                     </tbody>
                 </table>
-                @if (count($correosbus) >= 9 and $entrada == 1)
+                @if (count($correosbus) > 9 and $entrada == 1)
                     <div class="d-flex justify-content-center mb-4">{{ $correos->links() }}</div>
                 @endif
 
@@ -374,9 +374,9 @@
                 <div class="modal-body text-center">
                     <h2>¿Estas seguro?</h2>
                 </div>
-                <div class="modal-footer">
+                <div class="text-center pb-3">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" wire:click="cerrarsession()"
+                    <button type="button" class="btn aoa-btn text-white" wire:click="cerrarsession()"
                         data-dismiss="modal">Cerrar Session</button>
                 </div>
             </div>
@@ -399,7 +399,7 @@
                         <label for="inputAddress2">HASTA:</label>
                         <input id="fecha_fin" type="date" class="form-control" />
                     </div>
-                    <button id="filtrar" data-dismiss="modal" class="btn aoa-btn text-white">FILTRAR</button>
+                    <button id="filtrar" wire:click="pageRest" data-dismiss="modal" class="btn aoa-btn text-white">FILTRAR</button>
                 </div>
             </div>
         </div>
@@ -517,8 +517,6 @@
                             // console.log(asunto[0]);
                             editor.setData(asunto[0]);
                         });
-
-
                     })
                     .catch(error => {
                         console.error(error);

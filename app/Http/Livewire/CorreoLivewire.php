@@ -67,7 +67,6 @@ class CorreoLivewire extends Component
     public function VerCorreo($id)
     {
         $this->entrada = 2;
-        $this->resetPage();
         $ver = Http::get(env('PRODUCTION_URL').'/callcenter/correos/{correo}?token='.Session::get('key')->token.'&id='.$id);
         $ver = json_decode($ver);
         $this->verasunto = $ver;
@@ -140,5 +139,10 @@ class CorreoLivewire extends Component
     {
         $this->resetPage();
         $this->entrada = 1;
+    }
+    // resetpage
+    public function pageRest()
+    {
+        $this->resetPage();
     }
 }

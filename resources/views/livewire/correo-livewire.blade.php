@@ -30,7 +30,7 @@
                     Cerrar Sesion
                 </span>
                 <br>
-                <span type="button" data-toggle="modal" data-target="#fecha">
+                <span type="button" data-toggle="modal" @if ($entrada == 1) data-target="#fecha" @endif >
                     Filtrar
                 </span>
 

@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 
 class RolLivewire extends Component
 {
@@ -14,14 +15,13 @@ class RolLivewire extends Component
     // renderizar pagina
     public function render()
     {
-        $usuarios = Http::get(env('PRODUCTION_URL').'/callcenter/?token=ef77106b7f7662a1f39396df80c6e8e6');
+        $usuarios = Http::get(env('PRODUCTION_URL').'/callcenter/?token='.Session::get('key')->token.'&usuario='.Session::get('key')->usuario);
         $usuarios = json_decode($usuarios);
-        // dd($usuarios);
         return view('livewire.rol-livewire',compact('usuarios'));
     }
     // api eliminar o agregar
     public function agregaroeliminar($id,$estado)
     {
-     Http::get(env('PRODUCTION_URL').'/callcenter/agregarpermiso?token=ef77106b7f7662a1f39396df80c6e8e6&id_usuario='.$id.'&estado='.$estado);
+     $agregar=Http::get(env('PRODUCTION_URL').'/callcenter/agregarpermiso?token='.Session::get('key')->token.'&usuario='.Session::get('key')->usuario.'&id_usuario='.$id.'&estado='.$estado);
     }
 }

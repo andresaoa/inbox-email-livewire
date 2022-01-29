@@ -271,7 +271,7 @@
                                     <h1
                                         style="margin-top:0;margin-bottom:16px;font-size:26px;line-height:32px;font-weight:bold;letter-spacing:-0.02em;text-align:center">
                                         CORREO AOA</h1>
-                                    {{-- {{dd($verasunto[0])}} --}}
+                                    <h3>{{$verasunto[0]->asunto}}</h3>
                                     <p>Para: {{ $verasunto[0]->email }}</p>
                                     @php
                                         $data = [

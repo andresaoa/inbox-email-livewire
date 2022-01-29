@@ -35,6 +35,7 @@ class LoginController extends Controller
             ]);
         }
         else {
+            
             if (isset($response->{'datosAdmin'})) {
                 session(['key' => $response->{'datosAdmin'}]);
                 session(['admin' => "si"]);

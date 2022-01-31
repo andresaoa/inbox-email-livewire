@@ -50,4 +50,41 @@ class LoginController extends Controller
         }
         
     }
+    public function auth1(Request $request,$nombre,$siniestro)
+    {
+        $des = openssl_decrypt($nombre,"AES-128-ECB","a");
+        
+        $response = Http::post(env('PRODUCTION_URL').'/callcenter/login1', [
+            'usuario' => $des,
+            'token' => '876d7aea36089672b11e1cd60e9ccaec'
+        ]);
+        $response = json_decode($response);
+        if ($response ===  null) {
+            return back()->withErrors([
+                'message' => "¡Credenciales incorrectas!"
+            ]);
+        }
+        else {
+            
+            if (isset($response->{'datosAdmin'})) {
+                session(['key' => $response->{'datosAdmin'}]);
+                session(['admin' => "si"]);
+                if ($siniestro) {
+                    session(['siniestro' => $siniestro]);
+                }
+                return redirect()->to('aoacall');
+            }
+            else {
+            session(['key' => $response->{'datos'}]);
+            session(['permiso' => $response->{'permiso'}]);
+            session(['auth1' => "si"]);
+            if ($siniestro) {
+                session(['siniestro' => $siniestro]);
+            }
+            return redirect()->to('aoacall');
+            }
+            
+        }
+        
+    }
 }

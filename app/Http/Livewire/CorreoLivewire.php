@@ -32,7 +32,16 @@ class CorreoLivewire extends Component
         'usuario.required' => 'El Siniestro no puede estar vacio.',
         'asunto.min' => 'El valor minimo es 6'
     ];
-    
+    public function mount()
+    {
+        $this->usuario = Session::get('siniestro');
+        $siniestro = Http::get(env('PRODUCTION_URL').'/siniestro/{siniestro}?token=427a903c0256cc73f7d2367f41e3236a220108162855&id='.$this->usuario);
+        $siniestro = json_decode($siniestro);
+        if ($siniestro != null) {
+            $this->nombre = $siniestro->declarante_nombre;
+            $this->email = $siniestro->declarante_email;
+        }
+    }
     // render
     public function render()
     {

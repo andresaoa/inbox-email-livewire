@@ -41,10 +41,10 @@ class CorreoLivewire extends Component
             $plantillas = Http::get(env('PRODUCTION_URL').'/callcenter/plantillas?token='.Session::get('key')->token);
             $plantillas = json_decode($plantillas);
             // correos del usuario logueado
-            $correos = Http::get(env('PRODUCTION_URL').'/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->id)->body();
+            $correos = Http::get(env('PRODUCTION_URL').'/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->usuario)->body();
             $correos = collect(json_decode($correos));
             if ($correos == null) {
-                $correos = Http::get(env('PRODUCTION_URL').'/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->id.'&asunto='.$this->let)->body();
+                $correos = Http::get(env('PRODUCTION_URL').'/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->usuario.'&asunto='.$this->let)->body();
                 $correos = collect(json_decode($correos));
             }
             
@@ -87,7 +87,7 @@ class CorreoLivewire extends Component
         $adjunto = $this->adjunto;
         $this->resetExcept('entrada');
         $response = Http::post(env('PRODUCTION_URL').'/callcenter/correos/recive', [
-            'usuario' => Session::get('key')->id,
+            'usuario' => Session::get('key')->usuario,
             'cuerpo_mensaje' => $cuerpo_mensaje,
             'email'=> $email,
             'asunto'=> $asunto,
@@ -128,7 +128,7 @@ class CorreoLivewire extends Component
     // busqueda input correos
     public function letra()
     {
-        $this->correosbus = Http::get(env('PRODUCTION_URL').'/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->id.'&asunto='.$this->let.'&fechai='.$this->fecha_inicio.'&fechaf='.$this->fecha_fin)->body();
+        $this->correosbus = Http::get(env('PRODUCTION_URL').'/callcenter/correos?token='.Session::get('key')->token.'&id_user='.Session::get('key')->usuario.'&asunto='.$this->let.'&fechai='.$this->fecha_inicio.'&fechaf='.$this->fecha_fin)->body();
         $this->correosbus = collect(json_decode($this->correosbus));
         // if ($this->fecha_inicio && $this->fecha_fin) {
         //     $this->resetPage();

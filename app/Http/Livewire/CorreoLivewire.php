@@ -105,6 +105,7 @@ class CorreoLivewire extends Component
             'adjunto' => $adjunto == [] ? null : $adjunto,
             'token' => Session::get('key')->token
         ]);
+        Session::forget('siniestro');
         // $response = json_decode($response);
         // dd($response);
     }

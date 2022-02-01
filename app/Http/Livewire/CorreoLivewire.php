@@ -12,7 +12,7 @@ class CorreoLivewire extends Component
     use WithPagination;
     protected $paginationTheme = 'simple-bootstrap';
     // variables globales (se usan en las vistan y en el controlador)
-    public $entrada=1,$cuerpo,$usuario,$email,$asunto="",$verasunto,$nombre,$siniestro,$adjunto=[],$let="",$correosbus;
+    public $entrada=1,$cuerpo,$usuario,$email,$asunto="",$verasunto,$nombre,$siniestro,$adjunto=[],$let="",$correosbus,$numero;
     public $fecha_inicio,$fecha_fin,$cargando;
     // escuchador para el modal si esta seguro enviar el email
     protected $listeners = ['save'];
@@ -21,7 +21,7 @@ class CorreoLivewire extends Component
         'asunto' => 'required|min:6',
         'email' => 'required|email',
         'cuerpo' => 'required|min:20',
-        'usuario' => 'required|numeric',
+        'usuario' => 'required|min:4',
     ]; 
     // modificar los textos de error prederterminados
     protected $messages = [
@@ -40,6 +40,7 @@ class CorreoLivewire extends Component
         if ($siniestro != null) {
             $this->nombre = $siniestro->declarante_nombre;
             $this->email = $siniestro->declarante_email;
+            $this->numero = $siniestro->numero;
         }
     }
     // render
